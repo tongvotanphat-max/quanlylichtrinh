@@ -60,7 +60,6 @@
         const auth = firebase.auth();
 
         // --- 2. INLINE ICONS (FIX LỖI FORWARDREF) ---
-        // Thay vì dùng thư viện ngoài, ta định nghĩa trực tiếp SVG icon ở đây để đảm bảo 100% hoạt động.
         const IconBase = ({ children, size = 24, className = "", ...props }) => (
             <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -100,7 +99,6 @@
             Layout: (props) => <IconBase {...props}><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" x2="21" y1="9" y2="9"/><line x1="9" x2="9" y1="21" y2="9"/></IconBase>
         };
 
-        // Destructure icons để dùng trong code cũ
         const { 
             ChevronLeft, ChevronRight, Plus, Trash2, CheckCircle2, 
             Circle, X, Calendar: CalendarIcon, Clock, BellRing, 
@@ -150,18 +148,19 @@
         };
 
         const FloatingBackground = () => {
+            // Thêm class scale-50 md:scale-100 để thu nhỏ icon trên mobile
             return (
                 <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 bg-slate-50">
                     <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
                     <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
                     <div className="absolute -bottom-32 left-20 w-[500px] h-[500px] bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
 
-                    <div className="absolute top-10 left-10 text-blue-300 animate-bounce duration-[4000ms]"><Cloud size={100} fill="currentColor" className="opacity-40" /></div>
-                    <div className="absolute top-1/4 right-20 text-yellow-300 animate-pulse duration-[3000ms]"><Star size={50} fill="currentColor" className="opacity-60" /></div>
-                    <div className="absolute bottom-1/4 left-1/4 text-purple-300 animate-bounce duration-[6000ms]"><Moon size={60} fill="currentColor" className="opacity-40" /></div>
-                    <div className="absolute top-1/2 left-20 text-pink-300 rotate-12 animate-pulse"><Heart size={40} fill="currentColor" className="opacity-50" /></div>
-                    <div className="absolute top-20 right-1/3 text-emerald-300 animate-spin-slow"><Sparkles size={40} /></div>
-                    <div className="absolute bottom-10 right-10 text-orange-300 animate-bounce duration-[5000ms]"><Sun size={80} fill="currentColor" className="opacity-40" /></div>
+                    <div className="absolute top-10 left-10 text-blue-300 animate-bounce duration-[4000ms] scale-50 md:scale-100"><Cloud size={100} fill="currentColor" className="opacity-40" /></div>
+                    <div className="absolute top-1/4 right-20 text-yellow-300 animate-pulse duration-[3000ms] scale-50 md:scale-100"><Star size={50} fill="currentColor" className="opacity-60" /></div>
+                    <div className="absolute bottom-1/4 left-1/4 text-purple-300 animate-bounce duration-[6000ms] scale-50 md:scale-100"><Moon size={60} fill="currentColor" className="opacity-40" /></div>
+                    <div className="absolute top-1/2 left-20 text-pink-300 rotate-12 animate-pulse scale-50 md:scale-100"><Heart size={40} fill="currentColor" className="opacity-50" /></div>
+                    <div className="absolute top-20 right-1/3 text-emerald-300 animate-spin-slow scale-50 md:scale-100"><Sparkles size={40} /></div>
+                    <div className="absolute bottom-10 right-10 text-orange-300 animate-bounce duration-[5000ms] scale-50 md:scale-100"><Sun size={80} fill="currentColor" className="opacity-40" /></div>
                 </div>
             );
         };
@@ -193,7 +192,6 @@
             const isInitialLoad = useRef(true);
 
             useEffect(() => {
-                // 1. Thử đăng nhập ẩn danh để vượt qua Rules yêu cầu Auth
                 auth.signInAnonymously().catch(error => {
                     console.warn("Không thể đăng nhập ẩn danh:", error);
                 });
@@ -218,7 +216,6 @@
                     }
                 };
 
-                // Lắng nghe dữ liệu
                 tasksRef.on('value', handleData, handleError);
 
                 return () => tasksRef.off();
@@ -352,7 +349,7 @@
                 const days = [];
 
                 for (let i = 0; i < firstDay; i++) {
-                    days.push(<div key={`empty-${i}`} className="h-28 md:h-32 bg-transparent"></div>);
+                    days.push(<div key={`empty-${i}`} className="h-24 md:h-32 bg-transparent"></div>);
                 }
 
                 for (let day = 1; day <= daysInMonth; day++) {
@@ -369,20 +366,20 @@
                             key={day}
                             onClick={() => handleDayClick(day)}
                             className={`
-                                group relative h-28 md:h-32 p-3 rounded-3xl cursor-pointer transition-all duration-300 ease-out
+                                group relative h-24 md:h-32 p-2 md:p-3 rounded-3xl cursor-pointer transition-all duration-300 ease-out
                                 border border-transparent hover:border-blue-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1
                                 ${isToday ? 'bg-white ring-2 ring-blue-400 shadow-lg' : 'bg-white/80 hover:bg-white'}
                             `}
                         >
                             <div className="flex justify-between items-start mb-2">
                                 <span className={`
-                                    w-10 h-10 flex items-center justify-center rounded-full text-xl font-bold transition-colors
+                                    w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-sm md:text-xl font-bold transition-colors
                                     ${isToday ? 'bg-blue-500 text-white shadow-md' : 'text-slate-700 group-hover:bg-blue-50 group-hover:text-blue-600'}
                                 `}>
                                     {day}
                                 </span>
                                 {dayTasks.length > 0 && (
-                                    <div className="flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 text-xs font-bold text-slate-500 shadow-sm">
+                                    <div className="flex items-center justify-center w-5 h-5 md:w-7 md:h-7 rounded-full bg-slate-100 text-[10px] md:text-xs font-bold text-slate-500 shadow-sm">
                                         {dayTasks.length}
                                     </div>
                                 )}
@@ -394,7 +391,7 @@
                                     return (
                                         <div 
                                             key={idx} 
-                                            className={`w-2.5 h-2.5 rounded-full ${colorObj.bg} ${task.completed ? 'opacity-30' : 'opacity-100'}`}
+                                            className={`w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full ${colorObj.bg} ${task.completed ? 'opacity-30' : 'opacity-100'}`}
                                         />
                                     );
                                 })}
@@ -402,7 +399,7 @@
                             </div>
 
                             {dayTasks.length > 0 && (
-                                <div className="absolute bottom-4 left-4 right-4 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div className="absolute bottom-4 left-4 right-4 h-1 md:h-1.5 bg-gray-100 rounded-full overflow-hidden">
                                     <div 
                                         className={`h-full transition-all duration-500 rounded-full ${progress === 100 ? 'bg-emerald-400' : 'bg-blue-400'}`} 
                                         style={{ width: `${progress}%` }}
@@ -434,17 +431,17 @@
                         </div>
                     </div>
 
-                    <div className="relative z-10 container mx-auto p-4 md:p-8 flex flex-col items-center min-h-screen">
+                    <div className="relative z-10 container mx-auto p-2 md:p-8 flex flex-col items-center min-h-screen">
                         
                         {/* HEADER */}
                         <div className="w-full max-w-6xl flex flex-col md:flex-row justify-between items-center mb-8 gap-6 animate-in slide-in-from-bottom-5 duration-700">
                             <div className="flex items-center gap-5">
-                                <div className="bg-white p-4 rounded-3xl shadow-lg shadow-blue-100 text-blue-500 transform hover:rotate-12 transition-transform duration-300">
-                                    <CalendarIcon size={36} strokeWidth={2.5} />
+                                <div className="bg-white p-3 md:p-4 rounded-3xl shadow-lg shadow-blue-100 text-blue-500 transform hover:rotate-12 transition-transform duration-300">
+                                    <CalendarIcon size={24} className="md:w-9 md:h-9" strokeWidth={2.5} />
                                 </div>
                                 <div>
-                                    <h1 className="text-4xl font-extrabold text-slate-800 tracking-tight">Lịch Trình</h1>
-                                    <div className="flex items-center gap-2 text-slate-500 font-medium mt-1">
+                                    <h1 className="text-2xl md:text-4xl font-extrabold text-slate-800 tracking-tight">Lịch Trình</h1>
+                                    <div className="flex items-center gap-2 text-slate-500 font-medium mt-1 text-sm md:text-base">
                                         <Sparkles size={16} className="text-yellow-400" /> 
                                         <span>Quản lý thời gian, tận hưởng cuộc sống</span>
                                     </div>
@@ -452,26 +449,26 @@
                             </div>
                             
                             <div className="bg-white/80 backdrop-blur-xl p-2 rounded-2xl shadow-sm border border-white flex items-center gap-4">
-                                <button onClick={prevMonth} className="w-12 h-12 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors text-slate-600"><ChevronLeft size={28}/></button>
+                                <button onClick={prevMonth} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors text-slate-600"><ChevronLeft size={24} className="md:w-7 md:h-7"/></button>
                                 <div className="text-center px-4">
-                                    <div className="text-sm font-semibold text-slate-400 uppercase tracking-widest">Tháng {currentDate.getMonth() + 1}</div>
-                                    <div className="text-2xl font-bold text-slate-800">{currentDate.getFullYear()}</div>
+                                    <div className="text-xs md:text-sm font-semibold text-slate-400 uppercase tracking-widest">Tháng {currentDate.getMonth() + 1}</div>
+                                    <div className="text-xl md:text-2xl font-bold text-slate-800">{currentDate.getFullYear()}</div>
                                 </div>
-                                <button onClick={nextMonth} className="w-12 h-12 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors text-slate-600"><ChevronRight size={28}/></button>
+                                <button onClick={nextMonth} className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors text-slate-600"><ChevronRight size={24} className="md:w-7 md:h-7"/></button>
                             </div>
                         </div>
 
                         {/* CALENDAR GRID */}
-                        <div className="w-full max-w-6xl bg-white/60 backdrop-blur-2xl rounded-[40px] p-6 md:p-10 shadow-xl border border-white/50 animate-in fade-in duration-1000">
-                            <div className="grid grid-cols-7 mb-6">
+                        <div className="w-full max-w-6xl bg-white/60 backdrop-blur-2xl rounded-[30px] md:rounded-[40px] p-3 md:p-10 shadow-xl border border-white/50 animate-in fade-in duration-1000">
+                            <div className="grid grid-cols-7 mb-4 md:mb-6">
                                 {WEEKDAYS.map((day, idx) => (
-                                    <div key={day} className={`text-center font-bold uppercase tracking-wider text-xs py-3 ${idx === 0 ? 'text-rose-400' : 'text-slate-400'}`}>
+                                    <div key={day} className={`text-center font-bold uppercase tracking-wider text-[10px] md:text-xs py-2 md:py-3 ${idx === 0 ? 'text-rose-400' : 'text-slate-400'}`}>
                                         {day}
                                     </div>
                                 ))}
                             </div>
                             
-                            <div className="grid grid-cols-7 gap-3 md:gap-4">
+                            <div className="grid grid-cols-7 gap-1 md:gap-4">
                                 {renderCalendar()}
                             </div>
                         </div>
@@ -484,17 +481,17 @@
                             
                             <div className="relative bg-white rounded-[32px] w-full max-w-lg shadow-[0_20px_50px_-12px_rgba(0,0,0,0.25)] overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[85vh]">
                                 
-                                <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-8 text-white relative">
-                                    <div className="absolute top-0 right-0 p-4 opacity-10"><Cloud size={120} /></div>
+                                <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 md:p-8 text-white relative">
+                                    <div className="absolute top-0 right-0 p-4 opacity-10"><Cloud size={80} className="md:w-32 md:h-32" /></div>
                                     
                                     <div className="flex justify-between items-start relative z-10">
                                         <div>
                                             <div className="flex items-center gap-2 opacity-80 mb-1">
                                                 <Layout size={16} />
-                                                <span className="text-sm font-medium uppercase tracking-wider">Chi tiết ngày</span>
+                                                <span className="text-xs md:text-sm font-medium uppercase tracking-wider">Chi tiết ngày</span>
                                             </div>
-                                            <h2 className="text-4xl font-bold">
-                                                {selectedDate.getDate()} <span className="text-2xl font-normal opacity-80">thg {selectedDate.getMonth() + 1}</span>
+                                            <h2 className="text-3xl md:text-4xl font-bold">
+                                                {selectedDate.getDate()} <span className="text-xl md:text-2xl font-normal opacity-80">thg {selectedDate.getMonth() + 1}</span>
                                             </h2>
                                         </div>
                                         <button onClick={() => setIsModalOpen(false)} className="bg-white/20 hover:bg-white/30 p-2 rounded-full transition backdrop-blur-md">
@@ -524,13 +521,13 @@
                                     })()}
                                 </div>
 
-                                <div className="flex-1 overflow-y-auto p-6 bg-slate-50 scrollbar-hide">
+                                <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50 scrollbar-hide">
                                     {/* Input Form */}
-                                    <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-6 group focus-within:ring-2 focus-within:ring-blue-200 transition-all">
+                                    <div className="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-100 mb-6 group focus-within:ring-2 focus-within:ring-blue-200 transition-all">
                                         <input 
                                             type="text" 
                                             placeholder="Hôm nay bạn cần làm gì?" 
-                                            className="w-full text-lg font-medium text-slate-700 placeholder-slate-400 bg-transparent outline-none mb-4"
+                                            className="w-full text-base md:text-lg font-medium text-slate-700 placeholder-slate-400 bg-transparent outline-none mb-4"
                                             value={newTaskText}
                                             onChange={(e) => setNewTaskText(e.target.value)}
                                             onKeyDown={(e) => e.key === 'Enter' && handleSaveTask()}
@@ -563,13 +560,13 @@
                                             
                                             <button 
                                                 onClick={handleSaveTask}
-                                                className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-transform active:scale-95 shadow-lg shadow-slate-200"
+                                                className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-transform active:scale-95 shadow-lg shadow-slate-200 w-full sm:w-auto justify-center"
                                             >
                                                 {editingTaskId ? <Edit2 size={16} /> : <Plus size={16} />}
                                                 {editingTaskId ? 'Lưu' : 'Thêm'}
                                             </button>
                                             {editingTaskId && (
-                                                <button onClick={resetForm} className="text-xs text-slate-400 hover:text-slate-600 underline">Hủy sửa</button>
+                                                <button onClick={resetForm} className="text-xs text-slate-400 hover:text-slate-600 underline text-center sm:text-left">Hủy sửa</button>
                                             )}
                                         </div>
                                     </div>
@@ -592,7 +589,7 @@
                                                 <div 
                                                     key={task.id} 
                                                     className={`
-                                                        group relative flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 hover:scale-[1.02]
+                                                        group relative flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-2xl border transition-all duration-300 hover:scale-[1.02]
                                                         ${task.completed ? 'bg-slate-50 border-slate-100 opacity-70' : 'bg-white border-slate-100 shadow-sm hover:shadow-md'}
                                                         ${editingTaskId === task.id ? 'ring-2 ring-blue-400' : ''}
                                                     `}
@@ -612,7 +609,7 @@
                                                             <span className={`w-2 h-2 rounded-full ${colorObj.bg}`}></span>
                                                             <span className={`text-[10px] font-bold uppercase tracking-wider text-slate-400`}>{colorObj.label}</span>
                                                         </div>
-                                                        <p className={`font-semibold text-base truncate ${task.completed ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700'}`}>
+                                                        <p className={`font-semibold text-sm md:text-base truncate ${task.completed ? 'text-slate-400 line-through decoration-slate-300' : 'text-slate-700'}`}>
                                                             {task.text}
                                                         </p>
                                                         {task.time && (
